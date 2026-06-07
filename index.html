@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOBAR</title>
+<link rel="icon" type="image/x-icon" href="https://assets.football-logos.cc/logos/tournaments/512x512/fifa-world-cup-2026.9737ad74.png">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  background: #000;
+}
+
+/* LAYOUT UTAMA */
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+/* CONTAINER */
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  gap: 0;
+}
+
+/* AREA TAMPILAN WEB (KIRI) */
+.player {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* IFRAME PENAMPIL KONTEN WEB */
+iframe#content-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* PANEL KANAN (SIDEBAR) */
+.right-panel {
+  width: 283px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  min-height: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #fff;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+/* CHANNEL ITEM (DAFTAR LINK) */
+.channel {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+  background: #fff;
+  color: #000;
+  font-size: 14px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.channel:hover {
+  background: #f0f0f0;
+}
+
+.channel.active {
+  background: #e0e0e0;
+  color: #000;
+  font-weight: bold;
+}
+
+/* MOBILE */
+@media (max-width: 700px) {
+  body,
+  .container {
+    flex-direction: column;
+  }
+
+  .player {
+    height: 40%;
+    width: 100%;
+  }
+
+  .right-panel {
+    width: 100%;
+    height: 60%;
+    border-left: none;
+    border-top: 1px solid #ddd;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- AREA KIRI: TAMPILAN WEB -->
+  <div class="player">
+    <iframe id="content-viewer"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- AREA KANAN: DAFTAR LINK -->
+  <div class="right-panel">
+    <div class="sidebar">
+      <div id="channelList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const iframe = document.getElementById('content-viewer');
+const list = document.getElementById('channelList');
+
+// =========================
+// KONFIGURASI UTAMA
+// =========================
+
+// URL dasar yang akan digabungkan dengan ID
+const BASE_URL = "https://anym3u8player.com/ultimate-player-generator/player.php?player=jwplayer&type=auto&autoplay=1&controls=auto&theme=flat&buffer=30&quality=1&speed=1&pip=1&fullscreen=1&no_download=1&width=responsive&aspect=16%25253A9&url=";
+
+// URL FILE DAFTAR
+// Pakai URL RAW dari GitHub Gist / Pastebin / sites Lain
+const LIST_URL = "https://pastebin.com/raw/y0tJc74c";
+
+
+// =========================
+// LOAD DAFTAR
+// =========================
+async function loadChannels() {
+  try {
+    const response = await fetch(LIST_URL);
+    
+    if (!response.ok) {
+      throw new Error("Gagal mengambil data");
+    }
+
+    const text = await response.text();
+    const rows = text.trim().split('\n');
+    const channels = [];
+
+    rows.forEach(row => {
+      const parts = row.split('|');
+      const name = parts[0]?.trim();
+      const id = parts[1]?.trim();
+
+      if (name && id) {
+        channels.push({ name: name, id: id });
+      }
+    });
+
+    renderChannels(channels);
+
+  } catch (err) {
+    console.error("Error:", err);
+    list.innerHTML = '<div style="padding:14px;color:red;">Gagal memuat daftar.<br>Cobagunakan GitHub Gist.</div>';
+  }
+}
+
+
+// =========================
+// RENDER
+// =========================
+function renderChannels(channels) {
+  list.innerHTML = '';
+
+  if (channels.length === 0) {
+    list.innerHTML = '<div style="padding:14px;">Daftar kosong.</div>';
+    return;
+  }
+
+  channels.forEach((ch, index) => {
+    const div = document.createElement('div');
+    div.className = 'channel';
+    div.innerHTML = `<div>${ch.name}</div>`;
+
+    div.onclick = () => {
+      document.querySelectorAll('.channel')
+        .forEach(el => el.classList.remove('active'));
+      div.classList.add('active');
+      iframe.src = BASE_URL + ch.id;
+    };
+
+    list.appendChild(div);
+
+    if (index === 0) {
+      setTimeout(() => div.click(), 100);
+    }
+  });
+}
+
+
+// =========================
+// START
+// =========================
+loadChannels();
+
+</script>
+
+</body>
+</html>
