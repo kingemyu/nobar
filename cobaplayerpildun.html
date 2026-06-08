@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KING EMYU TV</title>
+<link rel="icon" type="image/x-icon" href="https://cdn.detik.net.id/sportasset/soccerteamsset/logo_with_contestant_id/1154.webp?v=2026060211">
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  font-family: "Segoe UI", sans-serif;
+  background: #000;
+}
+
+/* LAYOUT UTAMA */
+body {
+  display: flex;
+  flex-direction: row;
+}
+
+/* CONTAINER */
+.container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  gap: 0;
+}
+
+/* AREA TAMPILAN WEB (KIRI) */
+.player {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #111;
+  border-radius: 0;
+  overflow: hidden;
+  position: relative;
+  min-height: 0;
+}
+
+/* IFRAME PENAMPIL KONTEN WEB */
+iframe#content-viewer {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: #fff;
+}
+
+/* PANEL KANAN (SIDEBAR) */
+.right-panel {
+  width: 283px;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  min-height: 0;
+}
+
+/* SIDEBAR */
+.sidebar {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #fff;
+  padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #bbb transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+/* CHANNEL ITEM (DAFTAR LINK) */
+.channel {
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s;
+  background: #fff;
+  color: #000;
+  font-size: 14px;
+  white-space: normal;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.channel:hover {
+  background: #f0f0f0;
+}
+
+.channel.active {
+  background: #e0e0e0;
+  color: #000;
+  font-weight: bold;
+}
+
+/* MOBILE */
+@media (max-width: 750px) {
+  body,
+  .container {
+    flex-direction: column;
+  }
+
+  .player {
+    height: 40%;
+    width: 100%;
+  }
+
+  .right-panel {
+    width: 100%;
+    height: 60%;
+    border-left: none;
+    border-top: 1px solid #ddd;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- AREA KIRI: TAMPILAN WEB -->
+  <div class="player">
+    <iframe id="content-viewer"
+            sandbox="allow-scripts allow-same-origin allow-forms"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+    </iframe>
+  </div>
+
+  <!-- AREA KANAN: DAFTAR LINK -->
+  <div class="right-panel">
+    <div class="sidebar">
+      <div id="channelList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const iframe = document.getElementById('content-viewer');
+const list = document.getElementById('channelList');
+
+// =========================
+// KONFIGURASI UTAMA
+// =========================
+// Ganti URL dasar sesuai kebutuhan Anda
+const BASE_URL = "";
+
+// =========================
+// DAFTAR ID
+// =========================
+const channels = [
+  { name: "TVONE", id: "https://pemutarhls.edgeone.app/?id=tvone" },
+  { name: "MOJI", id: "https://pemutarhls.edgeone.app/?id=moji" },
+  { name: "TRANS 7", id: "https://pemutarhls.edgeone.app/?id=trans7" },
+  { name: "TRANS TV", id: "https://pemutarhls.edgeone.app/?id=transtv" },
+  { name: "METRO TV", id: "https://pemutarhls.edgeone.app/?id=metro" },
+  { name: "KOMPAS TV", id: "https://pemutarhls.edgeone.app/?id=kompas" },
+  { name: "RTV", id: "https://pemutarhls.edgeone.app/?id=rtv" },
+  { name: "CNN INDONESIA", id: "https://pemutarhls.edgeone.app/?id=cnn" },
+  { name: "TVRI", id: "https://pemutarhls.edgeone.app/?id=tvri" },
+  { name: "SOCCER", id: "https://pemutardashc.edgeone.app/?id=soccer" },
+  { name: "SPORTSTARS 1", id: "https://pemutardashc.edgeone.app/?id=ss1" },
+  { name: "SPORTSTARS 2", id: "https://pemutardashc.edgeone.app/?id=ss2" },
+  { name: "SPORTSTARS 4", id: "https://pemutardashc.edgeone.app/?id=ss4" },
+  { name: "TSN 1", id: "https://pemutardashc.edgeone.app/?id=tsn1" },
+  { name: "BEIN 1", id: "https://pemutardashc.edgeone.app/?id=bein1" },
+  { name: "SPOTV", id: "https://pemutardashc.edgeone.app/?id=spotv" }
+];
+
+
+// =========================
+// RENDER DAFTAR LINK
+// =========================
+function renderChannels() {
+
+  list.innerHTML = '';
+
+  channels.forEach((ch, index) => {
+
+    const div = document.createElement('div');
+    div.className = 'channel';
+    
+    // Tampilkan nama
+    div.innerHTML = `<div>${ch.name}</div>`;
+
+    // Saat diklik
+    div.onclick = () => {
+      
+      // Hapus aktifkan semua
+      document.querySelectorAll('.channel')
+        .forEach(el => el.classList.remove('active'));
+      
+      // Aktifkan yang diklik
+      div.classList.add('active');
+
+      // Gabungkan Base URL + ID
+      const fullUrl = BASE_URL + ch.id;
+
+      // Muat ke iframe
+      iframe.src = fullUrl;
+    };
+
+    list.appendChild(div);
+
+    // Jika pertama, langsung buka
+    if (index === 0) {
+      div.click();
+    }
+
+  });
+}
+
+
+// =========================
+// START
+// =========================
+renderChannels();
+
+</script>
+
+</body>
+</html>
