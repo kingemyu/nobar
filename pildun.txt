@@ -1,0 +1,104 @@
+12/06 02:00 WIB Mexico vs South Africa|https://op-group1-swiftservesd-1.dens.tv/s/s11/index.m3u8
+12/06 09:00 WIB Korea Republic vs Czech Republic|https://op-group1-swiftservesd-1.dens.tv/s/s107/index.m3u8
+13/06 02:00 WIB Canada vs Bosnia and Herzegovina
+13/06 08:00 WIB USA vs Paraguay
+14/06 02:00 WIB Qatar vs Switzerland
+14/06 05:00 WIB Brazil vs Morocco
+14/06 08:00 WIB Haiti vs Scotland
+14/06 11:00 WIB Australia vs Turkey
+15/06 00:00 WIB Germany vs Curaçao
+15/06 03:00 WIB Netherlands vs Japan
+15/06 06:00 WIB Côte d'Ivoire vs Ecuador
+15/06 09:00 WIB Sweden vs Tunisia
+15/06 23:00 WIB Spain vs Cape Verde Islands
+16/06 02:00 WIB Belgium vs Egypt
+16/06 05:00 WIB Saudi Arabia vs Uruguay
+16/06 08:00 WIB Iran vs New Zealand
+17/06 02:00 WIB France vs Senegal
+17/06 05:00 WIB Iraq vs Norway
+17/06 08:00 WIB Argentina vs Algeria
+17/06 11:00 WIB Austria vs Jordan
+18/06 00:00 WIB Portugal vs Congo DR
+18/06 03:00 WIB England vs Croatia
+18/06 06:00 WIB Ghana vs Panama
+18/06 09:00 WIB Uzbekistan vs Colombia
+18/06 23:00 WIB Czech Republic vs South Africa
+19/06 02:00 WIB Switzerland vs Bosnia and Herzegovina
+19/06 05:00 WIB Canada vs Qatar
+19/06 08:00 WIB Mexico vs Korea Republic
+20/06 02:00 WIB USA vs Australia
+20/06 05:00 WIB Scotland vs Morocco
+20/06 07:30 WIB Brazil vs Haiti
+20/06 10:00 WIB Turkey vs Paraguay
+21/06 00:00 WIB Netherlands vs Sweden
+21/06 03:00 WIB Germany vs Côte d'Ivoire
+21/06 07:00 WIB Ecuador vs Curaçao
+21/06 11:00 WIB Tunisia vs Japan
+21/06 23:00 WIB Spain vs Saudi Arabia
+22/06 02:00 WIB Belgium vs Iran
+22/06 05:00 WIB Uruguay vs Cape Verde Islands
+22/06 08:00 WIB New Zealand vs Egypt
+23/06 00:00 WIB Argentina vs Austria
+23/06 04:00 WIB France vs Iraq
+23/06 07:00 WIB Norway vs Senegal
+23/06 10:00 WIB Jordan vs Algeria
+24/06 00:00 WIB Portugal vs Uzbekistan
+24/06 03:00 WIB England vs Ghana
+24/06 06:00 WIB Panama vs Croatia
+24/06 09:00 WIB Colombia vs Congo DR
+25/06 02:00 WIB Bosnia and Herzegovina vs Qatar
+25/06 02:00 WIB Switzerland vs Canada
+25/06 05:00 WIB Morocco vs Haiti
+25/06 05:00 WIB Scotland vs Brazil
+25/06 08:00 WIB Czech Republic vs Mexico
+25/06 08:00 WIB South Africa vs Korea Republic
+26/06 03:00 WIB Curaçao vs Côte d'Ivoire
+26/06 03:00 WIB Ecuador vs Germany
+26/06 06:00 WIB Japan vs Sweden
+26/06 06:00 WIB Tunisia vs Netherlands
+26/06 09:00 WIB Paraguay vs Australia
+26/06 09:00 WIB Turkey vs USA
+27/06 02:00 WIB Norway vs France
+27/06 02:00 WIB Senegal vs Iraq
+27/06 07:00 WIB Cape Verde Islands vs Saudi Arabia
+27/06 07:00 WIB Uruguay vs Spain
+27/06 10:00 WIB Egypt vs Iran
+27/06 10:00 WIB New Zealand vs Belgium
+28/06 04:00 WIB Croatia vs Ghana
+28/06 04:00 WIB Panama vs England
+28/06 06:30 WIB Colombia vs Portugal
+28/06 06:30 WIB Congo DR vs Uzbekistan
+28/06 09:00 WIB Algeria vs Austria
+28/06 09:00 WIB Jordan vs Argentina
+29/06 02:00 WIB 2A vs 2B
+30/06 00:00 WIB 1C vs 2F
+30/06 03:30 WIB 1E vs 3ABCDF
+30/06 08:00 WIB 1F vs 2C
+01/07 00:00 WIB 2E vs 2I
+01/07 04:00 WIB 1I vs 3CDFGH
+01/07 08:00 WIB 1A vs 3CEFHI
+01/07 23:00 WIB 1L vs 3EHIJK
+02/07 03:00 WIB 1G vs 3AEHIJ
+02/07 07:00 WIB 1D vs 3BEFIJ
+03/07 02:00 WIB 1H vs 2J
+03/07 06:00 WIB 2K vs 2L
+03/07 10:00 WIB 1B vs 3EFGIJ
+04/07 01:00 WIB 2D vs 2G
+04/07 05:00 WIB 1J vs 2H
+04/07 08:30 WIB 1K vs 3DEIJL
+05/07 00:00 WIB W73 vs W75
+05/07 04:00 WIB W74 vs W77
+06/07 03:00 WIB W76 vs W78
+06/07 07:00 WIB W79 vs W80
+07/07 02:00 WIB W83 vs W84
+07/07 07:00 WIB W81 vs W82
+07/07 23:00 WIB W86 vs W88
+08/07 03:00 WIB W85 vs W87
+10/07 03:00 WIB W89 vs W90
+11/07 02:00 WIB W93 vs W94
+12/07 04:00 WIB W91 vs W92
+12/07 08:00 WIB W95 vs W96
+15/07 02:00 WIB W97 vs W98
+16/07 02:00 WIB W99 vs W100
+19/07 04:00 WIB 3rd place: L101 vs L102
+20/07 02:00 WIB Final: W101 vs W102
