@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KING EMYU TV</title>
-<link rel="icon" type="image/x-icon" href="https://cdn.detik.net.id/sportasset/soccerteamsset/logo_with_contestant_id/1154.webp?v=2026060211">
+<meta name="referrer" content="no-referrer">
+<title>PILDUN</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.9.11/shaka-player.compiled.js"></script>
 
 <style>
 * {
@@ -37,28 +39,27 @@ body {
   gap: 0;
 }
 
-/* AREA TAMPILAN WEB (KIRI) */
+/* PLAYER */
 .player {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #111;
+  background: #000;
   border-radius: 0;
   overflow: hidden;
   position: relative;
   min-height: 0;
 }
 
-/* IFRAME PENAMPIL KONTEN WEB */
-iframe#content-viewer {
+video {
   width: 100%;
   height: 100%;
-  border: none;
-  background: #fff;
+  object-fit: contain;
+  background: #000;
 }
 
-/* PANEL KANAN (SIDEBAR) */
+/* PANEL KANAN */
 .right-panel {
   width: 283px;
   display: flex;
@@ -88,7 +89,7 @@ iframe#content-viewer {
   border-radius: 10px;
 }
 
-/* CHANNEL ITEM (DAFTAR LINK) */
+/* CHANNEL ITEM */
 .channel {
   padding: 14px;
   border-bottom: 1px solid #eee;
@@ -106,17 +107,16 @@ iframe#content-viewer {
 }
 
 .channel:hover {
-  background: #f0f0f0;
+  background: #dfe9ff;
 }
 
 .channel.active {
-  background: #e0e0e0;
+  background: #c3d4f7;
   color: #000;
-  font-weight: bold;
 }
 
 /* MOBILE */
-@media (max-width: 750px) {
+@media (max-width: 768px) {
   body,
   .container {
     flex-direction: column;
@@ -133,6 +133,12 @@ iframe#content-viewer {
     border-left: none;
     border-top: 1px solid #ddd;
   }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
 }
 </style>
 </head>
@@ -141,16 +147,16 @@ iframe#content-viewer {
 
 <div class="container">
 
-  <!-- AREA KIRI: TAMPILAN WEB -->
   <div class="player">
-    <iframe id="content-viewer"
-            sandbox="allow-scripts allow-same-origin allow-forms"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowfullscreen>
-    </iframe>
+    <video id="video"
+           autoplay
+           controls
+           playsinline
+           preload="auto"
+           x-webkit-airplay="allow">
+    </video>
   </div>
 
-  <!-- AREA KANAN: DAFTAR LINK -->
   <div class="right-panel">
     <div class="sidebar">
       <div id="channelList"></div>
@@ -160,36 +166,183 @@ iframe#content-viewer {
 </div>
 
 <script>
-const iframe = document.getElementById('content-viewer');
+const video = document.getElementById('video');
 const list = document.getElementById('channelList');
+const sidebar = document.querySelector('.sidebar');
 
-// =========================
-// KONFIGURASI UTAMA
-// =========================
-// Ganti URL dasar sesuai kebutuhan Anda
-const BASE_URL = "";
+let player = null;
+let channels = [];
 
-// =========================
-// DAFTAR ID
-// =========================
-const channels = [
-  { name: "TVONE", id: "https://pemutarhls.edgeone.app/?id=tvone" },
-  { name: "MOJI", id: "https://pemutarhls.edgeone.app/?id=moji" },
-  { name: "TRANS 7", id: "https://pemutarhls.edgeone.app/?id=trans7" },
-  { name: "TRANS TV", id: "https://pemutarhls.edgeone.app/?id=transtv" },
-  { name: "METRO TV", id: "https://pemutarhls.edgeone.app/?id=metro" },
-  { name: "KOMPAS TV", id: "https://pemutarhls.edgeone.app/?id=kompas" },
-  { name: "RTV", id: "https://pemutarhls.edgeone.app/?id=rtv" },
-  { name: "CNN INDONESIA", id: "https://pemutarhls.edgeone.app/?id=cnn" },
-  { name: "TVRI", id: "https://pemutarhls.edgeone.app/?id=tvri" },
-  { name: "TSN 1", id: "https://pemutardashc.edgeone.app/?id=tsn1" },
-  { name: "BEIN 1", id: "https://pemutardashc.edgeone.app/?id=bein1" },
-  { name: "SPOTV", id: "https://pemutardashc.edgeone.app/?id=spotv" }
-];
+const PLAYLIST_URL =
+'https://raw.githubusercontent.com/kingemyu/nobar/main/pildun.txt';
 
 
 // =========================
-// RENDER DAFTAR LINK
+// INIT SHAKA
+// =========================
+async function initPlayer() {
+
+  shaka.polyfill.installAll();
+
+  if (!shaka.Player.isBrowserSupported()) {
+
+    console.log('Browser tidak support Shaka');
+
+    return;
+
+  }
+
+  player = new shaka.Player(video);
+
+  player.configure({
+
+    streaming: {
+
+      bufferingGoal: 30,
+      rebufferingGoal: 2
+
+    },
+
+    manifest: {
+
+      dash: {
+
+        ignoreDrmInfo: false
+
+      }
+
+    }
+
+  });
+
+  player.addEventListener('error', event => {
+
+    console.log('SHAKA ERROR', event.detail);
+
+  });
+
+}
+
+
+// =========================
+// LOAD PLAYLIST
+// =========================
+async function loadChannels() {
+
+  try {
+
+    const response = await fetch(PLAYLIST_URL);
+
+    const text = await response.text();
+
+    channels = text
+      .split('\n')
+      .map(line => line.trim())
+      .filter(line => line)
+      .map(line => {
+
+        const parts = line.split(/\s*\|\s*/);
+
+        return {
+
+          name: parts[0]?.trim() || '',
+          url: parts[1]?.trim() || '',
+          clearkey: parts[2]?.trim() || ''
+
+        };
+
+      })
+      .filter(ch => ch.name && ch.url);
+
+    renderChannels();
+
+  } catch (err) {
+
+    console.log('GAGAL LOAD PLAYLIST', err);
+
+  }
+
+}
+
+
+// =========================
+// LOAD CHANNEL
+// =========================
+async function loadChannel(channel, element) {
+
+  document
+    .querySelectorAll('.channel')
+    .forEach(el => el.classList.remove('active'));
+
+  element.classList.add('active');
+
+  video.style.opacity = '0.7';
+
+  try {
+
+    await player.unload();
+
+    player.configure({
+
+      drm: {
+
+        clearKeys: {}
+
+      }
+
+    });
+
+    if (channel.clearkey) {
+
+      const drmParts = channel.clearkey.split(':');
+
+      if (drmParts.length === 2) {
+
+        const kid = drmParts[0]
+          .trim()
+          .toLowerCase();
+
+        const key = drmParts[1]
+          .trim()
+          .toLowerCase();
+
+        player.configure({
+
+          drm: {
+
+            clearKeys: {
+
+              [kid]: key
+
+            }
+
+          }
+
+        });
+
+      }
+
+    }
+
+    await player.load(channel.url);
+
+    video.style.opacity = '1';
+
+    await video.play();
+
+  } catch (err) {
+
+    console.log('LOAD ERROR', err);
+
+    video.style.opacity = '1';
+
+  }
+
+}
+
+
+// =========================
+// RENDER CHANNELS
 // =========================
 function renderChannels() {
 
@@ -198,44 +351,71 @@ function renderChannels() {
   channels.forEach((ch, index) => {
 
     const div = document.createElement('div');
+
     div.className = 'channel';
-    
-    // Tampilkan nama
+
     div.innerHTML = `<div>${ch.name}</div>`;
 
-    // Saat diklik
     div.onclick = () => {
-      
-      // Hapus aktifkan semua
-      document.querySelectorAll('.channel')
-        .forEach(el => el.classList.remove('active'));
-      
-      // Aktifkan yang diklik
-      div.classList.add('active');
 
-      // Gabungkan Base URL + ID
-      const fullUrl = BASE_URL + ch.id;
+      loadChannel(
+        ch,
+        div
+      );
 
-      // Muat ke iframe
-      iframe.src = fullUrl;
     };
 
     list.appendChild(div);
 
-    // Jika pertama, langsung buka
     if (index === 0) {
-      div.click();
+
+      setTimeout(() => {
+
+        div.click();
+
+      }, 300);
+
     }
 
   });
+
+  setTimeout(() => {
+
+    sidebar.scrollTop = 0;
+
+  }, 100);
+
 }
+
+
+// =========================
+// VIDEO EVENTS
+// =========================
+video.addEventListener('loadeddata', () => {
+
+  video.style.opacity = '1';
+
+});
+
+video.addEventListener('error', event => {
+
+  console.log('VIDEO ERROR', event);
+
+  video.style.opacity = '1';
+
+});
 
 
 // =========================
 // START
 // =========================
-renderChannels();
+(async () => {
 
+  await initPlayer();
+
+  await loadChannels();
+
+})();
 </script>
 
 </body>
